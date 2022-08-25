@@ -96,11 +96,12 @@
 
   <properties>
     <!-- language versions -->
-    <java.version>1.8</java.version>
+    <!-- test gitlab action -->
+    <java.version>11</java.version>
     <scala.2.10.version>2.10.5</scala.2.10.version>
-    <scala.version>${scala.2.10.version}</scala.version>
-    <scala.binary.version>2.10</scala.binary.version>
-    <scala.2.11.version>2.11.8</scala.2.11.version>
+    <scala.version>${scala.2.11.version}</scala.version>
+    <scala.binary.version>2.11</scala.binary.version>
+    <scala.2.11.version>2.11.12</scala.2.11.version>
     <scalatest.version>3.0.7</scalatest.version>
     <scalacheck.version>1.12.5</scalacheck.version>
 
@@ -1906,7 +1907,7 @@
     <profile>
       <id>scala-2.10</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
         <scala.version>${scala.2.10.version}</scala.version>
@@ -1916,6 +1917,9 @@
 
     <profile>
       <id>scala-2.11</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <properties>
         <scala.version>${scala.2.11.version}</scala.version>
         <scala.binary.version>2.11</scala.binary.version>

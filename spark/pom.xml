@@ -111,9 +111,11 @@
                 </executions>
                 <configuration>
                     <args>
+                        <arg>-nobootcp</arg>
                         <arg>-unchecked</arg>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
+                        <arg>-usejavacp:true</arg>
                     </args>
                     <jvmArgs>
                         <jvmArg>-Xms1024m</jvmArg>
