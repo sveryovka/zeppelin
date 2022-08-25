@@ -187,7 +187,7 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.el</artifactId>
-      <version>3.0.1-b12</version>
+      <version>3.0.2</version>
       <scope>provided</scope>
     </dependency>
 
