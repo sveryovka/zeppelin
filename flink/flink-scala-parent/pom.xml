@@ -1057,8 +1057,8 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <hive.version>2.3.4</hive.version>
-        <hiverunner.version>4.0.0</hiverunner.version>
+        <hive.version>3.1.2</hive.version>
+        <hiverunner.version>6.1.0</hiverunner.version>
       </properties>
     </profile>
 
