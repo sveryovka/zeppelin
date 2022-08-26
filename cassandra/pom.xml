@@ -34,7 +34,9 @@
         <cassandra.driver.version>4.8.0</cassandra.driver.version>
         <snappy.version>1.1.7.3</snappy.version>
         <lz4.version>1.7.0</lz4.version>
-        <scalate.version>1.7.1</scalate.version>
+        <scalate.version>1.8.0</scalate.version>
+        <scalate.scala.version>2.12</scalate.scala.version>
+        <scalate.maven.plugin.version>0.0.2</scalate.maven.plugin.version>
 
         <!-- test library versions -->
         <jna.version>4.2.0</jna.version>
@@ -81,25 +83,6 @@
 
         <!-- End of compression libraries -->
 
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-            <version>${scala.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- we'll switch back to it after removing support for Scala 2.10
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
@@ -114,7 +97,7 @@
 
         <dependency>
             <groupId>org.scalatra.scalate</groupId>
-            <artifactId>scalate-core_${scala.binary.version}</artifactId>
+            <artifactId>scalate-core_${scalate.scala.version}</artifactId>
             <version>${scalate.version}</version>
         </dependency>
 
@@ -134,19 +117,18 @@
         </dependency>
 
         <dependency>
-          <groupId>org.cassandraunit</groupId>
-          <artifactId>cassandra-unit</artifactId>
-          <version>${cassandra.unit.version}</version>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>com.datastax.oss</groupId>
-              <artifactId>java-driver-core</artifactId>
-            </exclusion>
-          </exclusions>
+            <groupId>org.cassandraunit</groupId>
+            <artifactId>cassandra-unit</artifactId>
+            <version>${cassandra.unit.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.datastax.oss</groupId>
+                    <artifactId>java-driver-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -174,8 +156,16 @@
         <plugins>
             <!-- Plugin to compile Scala code -->
             <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <configuration>
+                    <args>
+                        <arg>-target:jvm-1.8</arg>
+                        <arg>-nobootcp</arg>
+                        <arg>-usejavacp:true</arg>
+                    </args>
+                    <scalaCompatVersion>${scala.binary.version}</scalaCompatVersion>
+                </configuration>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -214,8 +204,9 @@
             </plugin>
 
             <plugin>
-                <groupId>org.scalatra.scalate</groupId>
-                <artifactId>maven-scalate-plugin_${scala.binary.version}</artifactId>
+                <groupId>com.stephenn</groupId>
+                <artifactId>scalate-maven-plugin_${scalate.scala.version}</artifactId>
+                <version>${scalate.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>compile</id>
