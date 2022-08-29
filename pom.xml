@@ -97,7 +97,8 @@
   <properties>
     <!-- language versions -->
     <!-- test gitlab action -->
-    <java.version>11</java.version>
+    <java.version>8</java.version>
+    <java.11.version>11</java.11.version>
     <scala.2.10.version>2.10.5</scala.2.10.version>
     <scala.version>${scala.2.11.version}</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
@@ -1904,6 +1905,15 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>java11-support</id>
+      <activation>
+        <jdk>11</jdk>
+      </activation>
+      <properties>
+        <java.version>${java.11.version}</java.version>
+      </properties>
+    </profile>
     <profile>
       <id>scala-2.10</id>
       <activation>
