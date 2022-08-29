@@ -77,7 +77,7 @@
     <module>flink-cmd</module>
     <module>influxdb</module>
     <module>python</module>
-    <module>cassandra</module>
+	    <!-- <module>cassandra</module> -->
     <module>elasticsearch</module>
     <module>bigquery</module>
     <module>alluxio</module>
@@ -157,7 +157,7 @@
     <junit.version>4.12</junit.version>
     <mockito.version>1.10.19</mockito.version>
     <assertj.version>1.7.0</assertj.version>
-    <powermock.version>1.6.4</powermock.version>
+    <powermock.version>2.0.9</powermock.version>
 
     <!-- plugin versions -->
     <plugin.antrun.version>1.8</plugin.antrun.version>
@@ -1159,7 +1159,7 @@
 
       <dependency>
         <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
+        <artifactId>powermock-api-mockito2</artifactId>
         <version>${powermock.version}</version>
         <scope>test</scope>
       </dependency>
