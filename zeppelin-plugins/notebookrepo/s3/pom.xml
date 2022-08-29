@@ -106,10 +106,6 @@
                     <artifactId>guava</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
@@ -148,4 +144,21 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>java11-support</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <scope>test</scope>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                    <version>2.3.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
