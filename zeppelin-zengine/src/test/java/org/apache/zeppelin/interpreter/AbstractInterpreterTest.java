@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * This class will load configuration files under
