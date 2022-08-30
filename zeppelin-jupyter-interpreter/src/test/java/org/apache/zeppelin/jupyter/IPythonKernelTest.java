@@ -42,8 +42,6 @@ import java.util.Properties;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 
 /**
  * TODO(zjffdu) These tests are copied from python module.
@@ -297,11 +295,12 @@ public class IPythonKernelTest {
   protected InterpreterContext getInterpreterContext() {
     Map<String, String> localProperties = new HashMap<>();
     localProperties.put("kernel", "python");
+
     return InterpreterContext.builder()
             .setNoteId("noteId")
             .setParagraphId("paragraphId")
             .setInterpreterOut(new InterpreterOutput())
-            .setIntpEventClient(mock(RemoteInterpreterEventClient.class))
+            .setIntpEventClient(org.mockito.Mockito.mock(RemoteInterpreterEventClient.class))
             .setLocalProperties(localProperties)
             .setResourcePool(resourcePool)
             .build();

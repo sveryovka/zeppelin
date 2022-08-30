@@ -27,19 +27,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobTest {
 
-  @Mock private JobListener mockJobListener;
+  @Mock
+  private JobListener mockJobListener;
   @Mock private Interpreter mockInterpreter;
   @Mock private InterpreterContext mockInterpreterContext;
   private InterpretJob spyInterpretJob;
