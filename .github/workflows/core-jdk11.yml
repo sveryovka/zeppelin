@@ -369,14 +369,6 @@ jobs:
       - name: Make IRkernel available to Jupyter
         run: |
           R -e "IRkernel::installspec()"
-      - name: run spark-2.4 tests with scala-2.11 and python-${{ matrix.python }}
-        if: matrix.python == '3.7'  # Spark 2.4 doesn't support python 3.8
-        run: ./mvnw test -DskipRat -pl spark-submit,spark/interpreter -Pspark-2.4 -Pspark-scala-2.11 -DfailIfNoTests=false -B
-      - name: run spark-2.4 tests with scala-2.12 and python-${{ matrix.python }}
-        if: matrix.python == '3.7'  # Spark 2.4 doesn't support python 3.8
-        run: |
-          rm -rf spark/interpreter/metastore_db
-          ./mvnw test -DskipRat -pl spark-submit,spark/interpreter -Pspark-2.4 -Pspark-scala-2.12 -Phadoop2 -Pintegration -B -DfailIfNoTests=false
       - name: run spark-3.0 tests with scala-2.12 and python-${{ matrix.python }}
         run: |
           rm -rf spark/interpreter/metastore_db
