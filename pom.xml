@@ -1906,6 +1906,14 @@
       <properties>
         <java.version>${java.11.version}</java.version>
       </properties>
+      <dependencies>
+        <dependency>
+          <scope>test</scope>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+          <version>2.3.1</version>
+        </dependency>
+      </dependencies>
     </profile>
     <profile>
       <id>scala-2.10</id>
