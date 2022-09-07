@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>zeppelin-interpreter-parent</artifactId>
@@ -34,19 +34,24 @@
         <cassandra.driver.version>4.8.0</cassandra.driver.version>
         <snappy.version>1.1.7.3</snappy.version>
         <lz4.version>1.7.0</lz4.version>
-        <scalate.version>1.8.0</scalate.version>
-        <scalate.scala.version>2.12</scalate.scala.version>
         <scalate.maven.plugin.version>0.0.2</scalate.maven.plugin.version>
-
         <!-- test library versions -->
         <jna.version>4.2.0</jna.version>
         <cassandra.unit.version>4.3.1.0</cassandra.unit.version>
-
         <interpreter.name>cassandra</interpreter.name>
+
+        <scalate.version>1.9.6</scalate.version>
+        <scalatest.version>3.0.1</scalatest.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <scala.version>2.12.8</scala.version>
+
+        <scala.maven.plugin.version>4.7.1</scala.maven.plugin.version>
+        <scalate.maven.plugin.version>0.0.2</scalate.maven.plugin.version>
+        <scalatest.maven.plugin.version>2.1.0</scalatest.maven.plugin.version>
+
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.zeppelin</groupId>
             <artifactId>zeppelin-interpreter</artifactId>
@@ -59,48 +64,45 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
             <version>${cassandra.driver.version}</version>
         </dependency>
-
         <!-- Compression libraries for the cassandra-driver protocol. -->
         <!-- Include both compression options to make to simplify deployment. -->
-
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>${snappy.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.lz4</groupId>
             <artifactId>lz4-java</artifactId>
             <version>${lz4.version}</version>
         </dependency>
-
         <!-- End of compression libraries -->
-
         <!-- we'll switch back to it after removing support for Scala 2.10
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-java8-compat_${scala.binary.version}</artifactId>
             <version>${scala.java8.compat.version}</version>
         </dependency> -->
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>${scala.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.scalatra.scalate</groupId>
-            <artifactId>scalate-core_${scalate.scala.version}</artifactId>
+            <artifactId>scalate-core_${scala.binary.version}</artifactId>
             <version>${scalate.version}</version>
         </dependency>
-
         <!-- test libraries -->
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -108,14 +110,12 @@
             <version>${scalatest.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.cassandraunit</groupId>
             <artifactId>cassandra-unit</artifactId>
@@ -128,20 +128,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <resources>
             <resource>
@@ -154,17 +151,39 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+
             <!-- Plugin to compile Scala code -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala.maven.plugin.version}</version>
                 <configuration>
+                    <source>8</source>
+                    <target>11</target>
                     <args>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
                         <arg>-target:jvm-1.8</arg>
                         <arg>-nobootcp</arg>
                         <arg>-usejavacp:true</arg>
                     </args>
-                    <scalaCompatVersion>${scala.binary.version}</scalaCompatVersion>
+                    <javacArgs>
+                        <javacArg>-source</javacArg>
+                        <javacArg>${java.version}</javacArg>
+                        <javacArg>-target</javacArg>
+                        <javacArg>${java.version}</javacArg>
+                        <javacArg>-Xlint:all,-serial,-path,-options</javacArg>
+                    </javacArgs>
+                    <scalaCompatVersion>${scala.version}</scalaCompatVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -189,10 +208,10 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
+                <version>${scalatest.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>test</id>
@@ -202,10 +221,9 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.stephenn</groupId>
-                <artifactId>scalate-maven-plugin_${scalate.scala.version}</artifactId>
+                <artifactId>scalate-maven-plugin_${scala.binary.version}</artifactId>
                 <version>${scalate.maven.plugin.version}</version>
                 <executions>
                     <execution>
@@ -221,7 +239,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
@@ -239,6 +256,5 @@
                 </configuration>
             </plugin>
         </plugins>
-
     </build>
 </project>

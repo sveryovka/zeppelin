@@ -77,7 +77,7 @@
     <module>flink-cmd</module>
     <module>influxdb</module>
     <module>python</module>
-	    <!-- <module>cassandra</module> -->
+    <module>cassandra</module>
     <module>elasticsearch</module>
     <module>bigquery</module>
     <module>alluxio</module>
