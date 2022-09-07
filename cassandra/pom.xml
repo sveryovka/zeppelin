@@ -167,7 +167,7 @@
                 <version>${scala.maven.plugin.version}</version>
                 <configuration>
                     <source>8</source>
-                    <target>11</target>
+                    <target>${java.version}</target>
                     <args>
                         <arg>-unchecked</arg>
                         <arg>-deprecation</arg>
