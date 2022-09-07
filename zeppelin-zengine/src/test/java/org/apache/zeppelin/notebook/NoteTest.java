@@ -153,9 +153,6 @@ public class NoteTest {
 
   @Test
   public void clearAllParagraphOutputTest() throws InterpreterNotFoundException {
-    when(interpreterFactory.getInterpreter(eq("md"), any())).thenReturn(interpreter);
-    when(interpreter.getScheduler()).thenReturn(scheduler);
-
     Note note = new Note("test", "", interpreterFactory, interpreterSettingManager, paragraphJobListener, credentials, noteEventListener);
     Paragraph p1 = note.addNewParagraph(AuthenticationInfo.ANONYMOUS);
     InterpreterResult result = new InterpreterResult(InterpreterResult.Code.SUCCESS, InterpreterResult.Type.TEXT, "result");
