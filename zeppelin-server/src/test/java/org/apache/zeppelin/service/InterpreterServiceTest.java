@@ -61,10 +61,6 @@ public class InterpreterServiceTest {
     when(mockZeppelinConfiguration.getInterpreterLocalRepoPath())
         .thenReturn(localRepoDir.toString());
 
-    when(mockZeppelinConfiguration.getZeppelinProxyUrl()).thenReturn(null);
-    when(mockZeppelinConfiguration.getZeppelinProxyUser()).thenReturn(null);
-    when(mockZeppelinConfiguration.getZeppelinProxyPassword()).thenReturn(null);
-
     interpreterService =
         new InterpreterService(mockZeppelinConfiguration, mockInterpreterSettingManager);
   }
