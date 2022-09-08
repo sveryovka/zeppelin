@@ -33,7 +33,7 @@
 
   <properties>
     <interpreter.name>jupyter</interpreter.name>
-    <python.py4j.version>0.10.7</python.py4j.version>
+    <python.py4j.version>0.10.9.7</python.py4j.version>
   </properties>
 
   <dependencies>
