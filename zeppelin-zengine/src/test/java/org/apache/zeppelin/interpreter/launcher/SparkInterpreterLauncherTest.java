@@ -107,8 +107,7 @@ public class SparkInterpreterLauncherTest {
     assertTrue(interpreterProcess.getEnv().size() >= 2);
     assertEquals(sparkHome, interpreterProcess.getEnv().get("SPARK_HOME"));
     assertFalse(interpreterProcess.getEnv().containsKey("ENV_1"));
-    assertEquals("--conf|spark.files=file_1" +
-                    "|--conf|spark.jars=jar_1|--conf|spark.app.name=intpGroupId|--conf|spark.master=local[*]",
+    assertEquals("--conf|spark.master=local[*]|--conf|spark.app.name=intpGroupId|--conf|spark.files=file_1|--conf|spark.jars=jar_1",
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
   }
 
@@ -138,9 +137,13 @@ public class SparkInterpreterLauncherTest {
     String sparkJars = "jar_1";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
-                    "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId|--conf|spark.master=yarn-client",
+
+    assertEquals("--conf|spark.master=yarn-client" +
+                    "|--conf|spark.yarn.isPython=true" +
+                    "|--conf|spark.yarn.dist.archives="+ sparkrZip +
+                    "|--conf|spark.app.name=intpGroupId" +
+                    "|--conf|spark.files=" + sparkFiles +
+                    "|--conf|spark.jars=" + sparkJars,
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
   }
 
@@ -171,10 +174,14 @@ public class SparkInterpreterLauncherTest {
     String sparkJars = "jar_1";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
+
+    assertEquals("--conf|spark.master=yarn" +
+                    "|--conf|spark.yarn.isPython=true" +
+                    "|--conf|spark.yarn.dist.archives="+ sparkrZip+
+                    "|--conf|spark.app.name=intpGroupId" +
                     "|--conf|spark.submit.deployMode=client" +
-                    "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId|--conf|spark.master=yarn",
+                    "|--conf|spark.files="+sparkFiles+"" +
+                    "|--conf|spark.jars="+sparkJars,
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
   }
 
@@ -207,14 +214,15 @@ public class SparkInterpreterLauncherTest {
             zeppelinHome + "/interpreter/zeppelin-interpreter-shaded-" + Util.getVersion() + ".jar";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.yarn.maxAppAttempts=1" +
-                    "|--conf|spark.files=" + sparkFiles +
-                    "|--conf|spark.jars=" + sparkJars +
+
+    assertEquals("--conf|spark.master=yarn-cluster" +
                     "|--conf|spark.yarn.isPython=true" +
-                    "|--conf|spark.yarn.submit.waitAppCompletion=false" +
+                    "|--conf|spark.yarn.dist.archives="+sparkrZip +
+                    "|--conf|spark.yarn.maxAppAttempts=1" +
                     "|--conf|spark.app.name=intpGroupId" +
-                    "|--conf|spark.master=yarn-cluster",
+                    "|--conf|spark.yarn.submit.waitAppCompletion=false" +
+                    "|--conf|spark.files=" + sparkFiles +
+                    "|--conf|spark.jars=" + sparkJars,
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
   }
 
@@ -254,13 +262,17 @@ public class SparkInterpreterLauncherTest {
             zeppelinHome + "/interpreter/zeppelin-interpreter-shaded-" + Util.getVersion() + ".jar";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
-    assertEquals("--proxy-user|user1|--conf|spark.yarn.dist.archives=" + sparkrZip +
-            "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId" +
-            "|--conf|spark.yarn.maxAppAttempts=1" +
-            "|--conf|spark.master=yarn" +
-            "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
-            "|--conf|spark.submit.deployMode=cluster" +
-            "|--conf|spark.yarn.submit.waitAppCompletion=false",
+
+    assertEquals("--proxy-user|user1" +
+                    "|--conf|spark.master=yarn" +
+                    "|--conf|spark.yarn.isPython=true" +
+                    "|--conf|spark.yarn.dist.archives=" + sparkrZip +
+                    "|--conf|spark.yarn.maxAppAttempts=1" +
+                    "|--conf|spark.app.name=intpGroupId" +
+                    "|--conf|spark.submit.deployMode=cluster" +
+                    "|--conf|spark.yarn.submit.waitAppCompletion=false" +
+                    "|--conf|spark.files=" + sparkFiles +
+                    "|--conf|spark.jars=" + sparkJars,
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
     Files.deleteIfExists(Paths.get(localRepoPath.toAbsolutePath().toString(), "test.jar"));
     FileUtils.deleteDirectory(localRepoPath.toFile());
@@ -302,16 +314,17 @@ public class SparkInterpreterLauncherTest {
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     // escape special characters
     String sparkFiles = "{}," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
+
     assertEquals("--proxy-user|user1" +
-                    "|--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.yarn.isPython=true" +
-                    "|--conf|spark.app.name=intpGroupId" +
-                    "|--conf|spark.yarn.maxAppAttempts=1" +
                     "|--conf|spark.master=yarn" +
-                    "|--conf|spark.files=" + sparkFiles +
-                    "|--conf|spark.jars=" + sparkJars +
+                    "|--conf|spark.yarn.isPython=true" +
+                    "|--conf|spark.yarn.dist.archives=" + sparkrZip +
+                    "|--conf|spark.yarn.maxAppAttempts=1" +
+                    "|--conf|spark.app.name=intpGroupId" +
                     "|--conf|spark.submit.deployMode=cluster" +
-                    "|--conf|spark.yarn.submit.waitAppCompletion=false",
+                    "|--conf|spark.yarn.submit.waitAppCompletion=false" +
+                    "|--conf|spark.files=" + sparkFiles +
+                    "|--conf|spark.jars=" + sparkJars,
             interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
     FileUtils.deleteDirectory(localRepoPath.toFile());
   }
