@@ -448,7 +448,7 @@ public class IPythonInterpreterTest extends BasePythonInterpreterTest {
     IPythonInterpreter iPythonInterpreter = (IPythonInterpreter)
             ((LazyOpenInterpreter) interpreter).getInnerInterpreter();
     iPythonInterpreter.getKernelProcessLauncher().stop();
-    waiter.await(3000);
+    waiter.await(10000);
   }
 
   @Test
