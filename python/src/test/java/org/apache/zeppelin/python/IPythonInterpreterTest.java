@@ -437,14 +437,14 @@ public class IPythonInterpreterTest extends BasePythonInterpreterTest {
           waiter.assertEquals(
                   "IPython kernel is abnormally exited, please check your code and log.",
                   result.message().get(0).getData());
-        } catch (InterpreterException e) {
+        } catch (Throwable e) {
           waiter.fail("Should not throw exception\n" + ExceptionUtils.getStackTrace(e));
         }
         waiter.resume();
       }
     };
     thread.start();
-    Thread.sleep(3000);
+    Thread.sleep(6000);
     IPythonInterpreter iPythonInterpreter = (IPythonInterpreter)
             ((LazyOpenInterpreter) interpreter).getInnerInterpreter();
     iPythonInterpreter.getKernelProcessLauncher().stop();
