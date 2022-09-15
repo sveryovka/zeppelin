@@ -282,6 +282,33 @@
 
       </dependencies>
     </profile>
+
+    <profile>
+      <id>hadoop34</id>
+
+      <properties>
+        <hadoop.version>3.4.4</hadoop.version>
+        <hadoop-client-runtime.artifact>hadoop-client-runtime</hadoop-client-runtime.artifact>
+        <hadoop-client-minicluster.artifact>hadoop-client-minicluster</hadoop-client-minicluster.artifact>
+      </properties>
+
+      <dependencies>
+
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>${hadoop-client-runtime.artifact}</artifactId>
+          <scope>test</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>${hadoop-client-minicluster.artifact}</artifactId>
+          <scope>test</scope>
+        </dependency>
+
+      </dependencies>
+    </profile>
+
   </profiles>
 
 </project>
