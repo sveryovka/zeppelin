@@ -80,7 +80,7 @@ public class SparkInterpreterLauncherTest {
     assertEquals(10000, interpreterProcess.getConnectTimeout());
     assertEquals(zConf.getInterpreterRemoteRunnerPath(), interpreterProcess.getInterpreterRunner());
     assertTrue(interpreterProcess.getEnv().size() >= 2);
-    assertEquals(true, interpreterProcess.isUserImpersonated());
+    assertTrue(interpreterProcess.isUserImpersonated());
   }
 
   @Test
@@ -107,9 +107,13 @@ public class SparkInterpreterLauncherTest {
     assertTrue(interpreterProcess.getEnv().size() >= 2);
     assertEquals(sparkHome, interpreterProcess.getEnv().get("SPARK_HOME"));
     assertFalse(interpreterProcess.getEnv().containsKey("ENV_1"));
-    assertEquals("--conf|spark.files=file_1" +
-                    "|--conf|spark.jars=jar_1|--conf|spark.app.name=intpGroupId|--conf|spark.master=local[*]",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+    assertTrue(propertyExists(actual,"--conf|spark.files=file_1"));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=jar_1"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId"));
+    assertTrue(propertyExists(actual,"--conf|spark.master=local[*]"));
+
   }
 
   @Test
@@ -138,10 +142,15 @@ public class SparkInterpreterLauncherTest {
     String sparkJars = "jar_1";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
-                    "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId|--conf|spark.master=yarn-client",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.dist.archives=" + sparkrZip));
+    assertTrue(propertyExists(actual,"--conf|spark.files=" + sparkFiles));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=" + sparkJars));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.isPython=true"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId"));
+    assertTrue(propertyExists(actual,"--conf|spark.master=yarn-client"));
+
   }
 
   @Test
@@ -171,11 +180,16 @@ public class SparkInterpreterLauncherTest {
     String sparkJars = "jar_1";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
-                    "|--conf|spark.submit.deployMode=client" +
-                    "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId|--conf|spark.master=yarn",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.dist.archives=" + sparkrZip));
+    assertTrue(propertyExists(actual,"--conf|spark.files=" + sparkFiles));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=" + sparkJars));
+    assertTrue(propertyExists(actual,"--conf|spark.submit.deployMode=client"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.isPython=true"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId" ));
+    assertTrue(propertyExists(actual,"--conf|spark.master=yarn"));
+
   }
 
   @Test
@@ -207,15 +221,17 @@ public class SparkInterpreterLauncherTest {
             zeppelinHome + "/interpreter/zeppelin-interpreter-shaded-" + Util.getVersion() + ".jar";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
-    assertEquals("--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.yarn.maxAppAttempts=1" +
-                    "|--conf|spark.files=" + sparkFiles +
-                    "|--conf|spark.jars=" + sparkJars +
-                    "|--conf|spark.yarn.isPython=true" +
-                    "|--conf|spark.yarn.submit.waitAppCompletion=false" +
-                    "|--conf|spark.app.name=intpGroupId" +
-                    "|--conf|spark.master=yarn-cluster",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.dist.archives=" + sparkrZip));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.maxAppAttempts=1"));
+    assertTrue(propertyExists(actual,"--conf|spark.files=" + sparkFiles));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=" + sparkJars));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.isPython=true"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.submit.waitAppCompletion=false"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId"));
+    assertTrue(propertyExists(actual,"--conf|spark.master=yarn-cluster"));
+
   }
 
   @Test
@@ -254,14 +270,20 @@ public class SparkInterpreterLauncherTest {
             zeppelinHome + "/interpreter/zeppelin-interpreter-shaded-" + Util.getVersion() + ".jar";
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     String sparkFiles = "file_1," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
-    assertEquals("--proxy-user|user1|--conf|spark.yarn.dist.archives=" + sparkrZip +
-            "|--conf|spark.yarn.isPython=true|--conf|spark.app.name=intpGroupId" +
-            "|--conf|spark.yarn.maxAppAttempts=1" +
-            "|--conf|spark.master=yarn" +
-            "|--conf|spark.files=" + sparkFiles + "|--conf|spark.jars=" + sparkJars +
-            "|--conf|spark.submit.deployMode=cluster" +
-            "|--conf|spark.yarn.submit.waitAppCompletion=false",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+
+    assertTrue(propertyExists(actual,"--proxy-user|user1|"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.dist.archives=" + sparkrZip));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.isPython=true"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.maxAppAttempts=1"));
+    assertTrue(propertyExists(actual,"--conf|spark.master=yarn"));
+    assertTrue(propertyExists(actual,"--conf|spark.files=" + sparkFiles));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=" + sparkJars));
+    assertTrue(propertyExists(actual,"--conf|spark.submit.deployMode=cluster"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.submit.waitAppCompletion=false"));
+
     Files.deleteIfExists(Paths.get(localRepoPath.toAbsolutePath().toString(), "test.jar"));
     FileUtils.deleteDirectory(localRepoPath.toFile());
   }
@@ -302,17 +324,37 @@ public class SparkInterpreterLauncherTest {
     String sparkrZip = sparkHome + "/R/lib/sparkr.zip#sparkr";
     // escape special characters
     String sparkFiles = "{}," + zeppelinHome + "/conf/log4j_yarn_cluster.properties";
-    assertEquals("--proxy-user|user1" +
-                    "|--conf|spark.yarn.dist.archives=" + sparkrZip +
-                    "|--conf|spark.yarn.isPython=true" +
-                    "|--conf|spark.app.name=intpGroupId" +
-                    "|--conf|spark.yarn.maxAppAttempts=1" +
-                    "|--conf|spark.master=yarn" +
-                    "|--conf|spark.files=" + sparkFiles +
-                    "|--conf|spark.jars=" + sparkJars +
-                    "|--conf|spark.submit.deployMode=cluster" +
-                    "|--conf|spark.yarn.submit.waitAppCompletion=false",
-            interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF"));
+
+    String actual = interpreterProcess.getEnv().get("ZEPPELIN_SPARK_CONF");
+    assertTrue(propertyExists(actual,"--proxy-user|user1"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.dist.archives=" + sparkrZip));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.isPython=true"));
+    assertTrue(propertyExists(actual,"--conf|spark.app.name=intpGroupId"));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.maxAppAttempts=1"));
+    assertTrue(propertyExists(actual,"--conf|spark.master=yarn"));
+    assertTrue(propertyExists(actual,"--conf|spark.files=" + sparkFiles));
+    assertTrue(propertyExists(actual,"--conf|spark.jars=" + sparkJars));
+    assertTrue(propertyExists(actual,"--conf|spark.submit.deployMode=cluster" ));
+    assertTrue(propertyExists(actual,"--conf|spark.yarn.submit.waitAppCompletion=false"));
+
     FileUtils.deleteDirectory(localRepoPath.toFile());
+  }
+
+  private boolean propertyExists(String source, String property) {
+    if (!source.contains(property)) {
+      LOGGER.error("Property: '{}' is not present in source: '{}'", property, source);
+      return false;
+    }
+    return true;
+  }
+
+  @Test
+  public void testPropertyExists() {
+    assertTrue(propertyExists("abc", "a"));
+    assertFalse(propertyExists("abc", "1"));
+
+    assertTrue(propertyExists("|user1|--conf|spark.master=yarn|--conf|spark.yarn.isPython=true|", "spark.master=yarn"));
+    assertTrue(propertyExists("|user1|--conf|spark.master=yarn|--conf|spark.yarn.isPython=true|", "spark.yarn.isPython=true"));
+    assertTrue(propertyExists("|user1|--conf|spark.master=yarn|--conf|spark.yarn.isPython=true|", "|user1|"));
   }
 }
