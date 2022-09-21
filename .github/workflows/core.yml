@@ -285,7 +285,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        hadoop: [ 2,3, 33 ]
+        hadoop: [ 33 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -309,7 +309,7 @@ jobs:
             ${{ runner.os }}-zeppelin-
       - name: install environment
         run: |
-          ./mvnw install -DskipTests -DskipRat -pl zeppelin-interpreter-integration,zeppelin-web,spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13,markdown -am -Phadoop2 -Pintegration -B
+          ./mvnw install -DskipTests -DskipRat -pl zeppelin-interpreter-integration,zeppelin-web,spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13,markdown -am -Phadoop33 -Pintegration -B
           ./mvnw clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: Setup conda environment with python 3.7 and R
         uses: conda-incubator/setup-miniconda@v2
@@ -357,7 +357,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-zeppelin-
       - name: install environment
-        run: ./mvnw install -DskipTests -DskipRat -pl spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13 -am -Phadoop2 -B
+        run: ./mvnw install -DskipTests -DskipRat -pl spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13 -am -Phadoop33 -B
       - name: Setup conda environment with python ${{ matrix.python }} and R
         uses: conda-incubator/setup-miniconda@v2
         with:
