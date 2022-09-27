@@ -195,7 +195,7 @@ jobs:
             ${{ runner.os }}-zeppelin-
       - name: install environment
         run: |
-          ./mvnw install -DskipTests -DskipRat -Phadoop2 -Pintegration -pl zeppelin-interpreter-integration,zeppelin-web,spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13,markdown,flink-cmd,flink/flink-scala-2.11,flink/flink-scala-2.12,jdbc,shell -am -Pflink-114
+          ./mvnw install -DskipTests -DskipRat -Phadoop3 -Pintegration -pl zeppelin-interpreter-integration,zeppelin-web,spark-submit,spark/scala-2.11,spark/scala-2.12,spark/scala-2.13,markdown,flink-cmd,flink/flink-scala-2.11,flink/flink-scala-2.12,jdbc,shell -am -Pflink-114
           ./mvnw package -DskipRat -pl zeppelin-plugins -amd -DskipTests -B
       - name: Setup conda environment with python 3.7 and R
         uses: conda-incubator/setup-miniconda@v2
@@ -212,7 +212,7 @@ jobs:
         run: |
           R -e "IRkernel::installspec()"
       - name: run tests
-        run: ./mvnw test -DskipRat -pl zeppelin-interpreter-integration -Phadoop2 -Pintegration -DfailIfNoTests=false -Dtest=ZeppelinClientIntegrationTest,ZeppelinClientWithAuthIntegrationTest,ZSessionIntegrationTest,ShellIntegrationTest,JdbcIntegrationTest
+        run: ./mvnw test -DskipRat -pl zeppelin-interpreter-integration -Phadoop3 -Pintegration -DfailIfNoTests=false -Dtest=ZeppelinClientIntegrationTest,ZeppelinClientWithAuthIntegrationTest,ZSessionIntegrationTest,ShellIntegrationTest,JdbcIntegrationTest
       - name: Print zeppelin logs
         if: always()
         run: if [ -d "logs" ]; then cat logs/*; fi
@@ -247,12 +247,12 @@ jobs:
       - name: install environment for flink before 1.15 (exclusive)
         if: matrix.flink != '115'
         run: |
-          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.11,flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop2 -Pintegration -B
+          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.11,flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop3 -Pintegration -B
           ./mvnw clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: install environment for flink after 1.15 (inclusive)
         if: matrix.flink == '115'
         run: |
-          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop2 -Pintegration -B
+          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop3 -Pintegration -B
           ./mvnw clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: Setup conda environment with python 3.7 and
         uses: conda-incubator/setup-miniconda@v2
