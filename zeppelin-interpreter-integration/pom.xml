@@ -287,7 +287,7 @@
       <id>hadoop34</id>
 
       <properties>
-        <hadoop.version>${hadoop3.3.version}</hadoop.version>
+        <hadoop.version>3.3.4</hadoop.version>
         <hadoop-client-runtime.artifact>hadoop-client-runtime</hadoop-client-runtime.artifact>
         <hadoop-client-minicluster.artifact>hadoop-client-minicluster</hadoop-client-minicluster.artifact>
       </properties>
