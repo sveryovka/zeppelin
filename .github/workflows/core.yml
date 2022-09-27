@@ -6,7 +6,6 @@ on:
       - master
       - branch-*
     types: [opened, synchronize]
-  workflow_dispatch:
 
 env:
   # Disable keepAlive and pool
