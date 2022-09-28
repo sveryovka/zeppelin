@@ -27,6 +27,7 @@ import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
@@ -85,13 +86,11 @@ public class FlinkInterpreter extends Interpreter {
    */
   private FlinkScalaInterpreter loadFlinkScalaInterpreter() throws Exception {
     String scalaVersion = extractScalaVersion();
-    ClassLoader flinkScalaClassLoader = FlinkScalaInterpreter.class.getClassLoader();
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = Class.forName(innerIntpClassName);
 
-    return (FlinkScalaInterpreter)
-            clazz.getConstructor(Properties.class, URLClassLoader.class)
-                    .newInstance(getProperties(), flinkScalaClassLoader);
+    //return (FlinkScalaInterpreter)clazz.getConstructor(Properties.class, URLClassLoader.class).newInstance(getProperties(), flinkScalaClassLoader);
+    return (FlinkScalaInterpreter)clazz.getDeclaredConstructors()[0].newInstance(getProperties(), new URLClassLoader(new URL[0], this.getClass().getClassLoader()));
   }
 
   @Override
