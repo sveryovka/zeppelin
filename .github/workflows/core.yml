@@ -37,16 +37,17 @@ jobs:
       fail-fast: false
       matrix:
         hadoop: [hadoop2, hadoop3]
+        java: [ 8, 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -84,6 +85,10 @@ jobs:
   # test interpreter modules except spark, flink, python, rlang, jupyter
   interpreter-test-non-core:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 8, 11 ]
     env:
       INTERPRETERS: 'hbase,jdbc,file,flink-cmd,cassandra,elasticsearch,bigquery,alluxio,livy,groovy,java,neo4j,submarine,sparql,mongodb,influxdb'
     steps:
@@ -91,11 +96,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -130,16 +135,17 @@ jobs:
       fail-fast: false
       matrix:
         python: [ 3.7, 3.8 ]
+        java: [ 8, 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -175,6 +181,10 @@ jobs:
   # zeppelin integration test except Spark & Flink
   zeppelin-integration-test:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 8, 11 ]
     steps:
       # user/password => root/root
       - name: Start mysql
@@ -183,11 +193,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -222,7 +232,7 @@ jobs:
       - name: Print zeppelin logs
         if: always()
         run: if [ -d "logs" ]; then cat logs/*; fi
-        
+
   flink-test-and-flink-integration-test:
     runs-on: ubuntu-20.04
     strategy:
@@ -288,16 +298,17 @@ jobs:
       fail-fast: false
       matrix:
         hadoop: [ 2, 3 ]
+        java: [ 8, 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -337,16 +348,17 @@ jobs:
       fail-fast: false
       matrix:
         python: [ 3.7, 3.8 ]
+        java: [ 8, 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -454,16 +466,20 @@ jobs:
 
   default-build:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 8, 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tune Runner VM
         uses: ./.github/actions/tune-runner-vm
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -477,4 +493,3 @@ jobs:
             ${{ runner.os }}-zeppelin-
       - name: build without any profiles
         run: ./mvnw clean package -DskipTests
-        
