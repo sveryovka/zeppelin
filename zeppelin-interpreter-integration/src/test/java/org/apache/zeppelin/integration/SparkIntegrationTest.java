@@ -200,7 +200,8 @@ public abstract class SparkIntegrationTest {
     assumeTrue("Hadoop version mismatch, skip test", isHadoopVersionMatch());
 
     InterpreterSetting sparkInterpreterSetting = interpreterSettingManager.getInterpreterSettingByName("spark");
-    sparkInterpreterSetting.setProperty("spark.master", "yarn-client");
+    sparkInterpreterSetting.setProperty("spark.master", "yarn");
+    sparkInterpreterSetting.setProperty("spark.submit.deployMode", "client");
     sparkInterpreterSetting.setProperty("HADOOP_CONF_DIR", hadoopCluster.getConfigPath());
     sparkInterpreterSetting.setProperty("SPARK_HOME", sparkHome);
     sparkInterpreterSetting.setProperty("ZEPPELIN_CONF_DIR", zeppelin.getZeppelinConfDir().getAbsolutePath());
@@ -252,7 +253,8 @@ public abstract class SparkIntegrationTest {
     assumeTrue("Hadoop version mismatch, skip test", isHadoopVersionMatch());
 
     InterpreterSetting sparkInterpreterSetting = interpreterSettingManager.getInterpreterSettingByName("spark");
-    sparkInterpreterSetting.setProperty("spark.master", "yarn-cluster");
+    sparkInterpreterSetting.setProperty("spark.master", "yarn");
+    sparkInterpreterSetting.setProperty("spark.submit.deployMode", "cluster");
     sparkInterpreterSetting.setProperty("HADOOP_CONF_DIR", hadoopCluster.getConfigPath());
     sparkInterpreterSetting.setProperty("SPARK_HOME", sparkHome);
     sparkInterpreterSetting.setProperty("ZEPPELIN_CONF_DIR", zeppelin.getZeppelinConfDir().getAbsolutePath());
