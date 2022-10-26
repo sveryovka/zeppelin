@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   push:
   pull_request:
+    branches:
+      - master
+      - branch-*
+    types: [opened, synchronize]
 
 env:
   # Disable keepAlive and pool
@@ -21,6 +25,9 @@ env:
 defaults:
   run:
     shell: bash -l {0}
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
 
 jobs:
   # test on core-modules (zeppelin-interpreter,zeppelin-zengine,zeppelin-server),
@@ -79,7 +86,7 @@ jobs:
   interpreter-test-non-core:
     runs-on: ubuntu-20.04
     env:
-        INTERPRETERS: 'hbase,jdbc,file,flink-cmd,cassandra,elasticsearch,bigquery,alluxio,livy,groovy,java,neo4j,submarine,sparql,mongodb,influxdb'
+      INTERPRETERS: 'hbase,jdbc,file,flink-cmd,cassandra,elasticsearch,bigquery,alluxio,livy,groovy,java,neo4j,submarine,sparql,mongodb,influxdb'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -247,12 +254,12 @@ jobs:
       - name: install environment for flink before 1.15 (exclusive)
         if: matrix.flink != '115'
         run: |
-          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.11,flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop3 -Pintegration -B
+          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.11,flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop2 -Pintegration -B
           ./mvnw clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: install environment for flink after 1.15 (inclusive)
         if: matrix.flink == '115'
         run: |
-          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop3 -Pintegration -B
+          ./mvnw install -DskipTests -DskipRat -am -pl flink/flink-scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Phadoop2 -Pintegration -B
           ./mvnw clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: Setup conda environment with python 3.7 and
         uses: conda-incubator/setup-miniconda@v2
@@ -368,6 +375,14 @@ jobs:
       - name: Make IRkernel available to Jupyter
         run: |
           R -e "IRkernel::installspec()"
+      - name: run spark-2.4 tests with scala-2.11 and python-${{ matrix.python }}
+        if: matrix.python == '3.7'  # Spark 2.4 doesn't support python 3.8
+        run: ./mvnw test -DskipRat -pl spark-submit,spark/interpreter -Pspark-2.4 -Pspark-scala-2.11 -DfailIfNoTests=false -B
+      - name: run spark-2.4 tests with scala-2.12 and python-${{ matrix.python }}
+        if: matrix.python == '3.7'  # Spark 2.4 doesn't support python 3.8
+        run: |
+          rm -rf spark/interpreter/metastore_db
+          ./mvnw test -DskipRat -pl spark-submit,spark/interpreter -Pspark-2.4 -Pspark-scala-2.12 -Phadoop2 -Pintegration -B -DfailIfNoTests=false
       - name: run spark-3.0 tests with scala-2.12 and python-${{ matrix.python }}
         run: |
           rm -rf spark/interpreter/metastore_db
