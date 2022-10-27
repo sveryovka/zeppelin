@@ -69,7 +69,6 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
     </dependency>
   </dependencies>
 
@@ -77,9 +76,6 @@
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>
-      </testResource>
-      <testResource>
-        <directory>${project.basedir}/src/main/resources</directory>
       </testResource>
     </testResources>
     <plugins>
@@ -98,9 +94,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <skip>false</skip>
-        </configuration>
       </plugin>
     </plugins>
     <resources>

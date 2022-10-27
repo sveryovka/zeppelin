@@ -320,6 +320,29 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <!-- used from zeppelin-zenigne -->
+        <exclusion>
+          <groupId>org.objenesis</groupId>
+          <artifactId>objenesis</artifactId>
+        </exclusion>
+        <!-- used from powermock-module-junit -->
+        <exclusion>
+          <groupId>net.bytebuddy</groupId>
+          <artifactId>byte-buddy-agent</artifactId>
+        </exclusion>
+        <!-- used from powermock-module-junit -->
+        <exclusion>
+          <groupId>net.bytebuddy</groupId>
+          <artifactId>byte-buddy</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>${selenium.java.version}</version>
@@ -371,6 +394,11 @@
           <exclusion>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
+          </exclusion>
+          <!-- used from zeppelin-zenigne -->
+          <exclusion>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
           </exclusion>
         </exclusions>
       </dependency>

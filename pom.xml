@@ -32,7 +32,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>17</version>
+    <version>26</version>
   </parent>
 
   <licenses>
@@ -52,6 +52,7 @@
   <inceptionYear>2013</inceptionYear>
 
   <modules>
+    <module>build-tools</module>
     <module>zeppelin-interpreter-parent</module>
     <module>zeppelin-interpreter</module>
     <module>zeppelin-interpreter-shaded</module>
@@ -96,13 +97,13 @@
 
   <properties>
     <!-- language versions -->
-    <!-- test gitlab action -->
-    <java.version>8</java.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <java.version>1.8</java.version>
     <java.11.version>11</java.11.version>
-    <scala.2.10.version>2.10.5</scala.2.10.version>
     <scala.version>${scala.2.11.version}</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scala.2.11.version>2.11.12</scala.2.11.version>
+    <scala.2.12.version>2.12.16</scala.2.12.version>
     <scalatest.version>3.0.7</scalatest.version>
     <scalacheck.version>1.12.5</scalacheck.version>
 
@@ -116,7 +117,7 @@
     <log4j.version>1.2.17</log4j.version>
     <libthrift.version>0.13.0</libthrift.version>
     <flexmark.all.version>0.62.2</flexmark.all.version>
-    <gson.version>2.8.6</gson.version>
+    <gson.version>2.8.9</gson.version>
     <gson-extras.version>0.2.2</gson-extras.version>
     <jetty.version>9.4.43.v20210629</jetty.version>
     <httpcomponents.core.version>4.4.1</httpcomponents.core.version>
@@ -124,7 +125,7 @@
     <httpcomponents.asyncclient.version>4.0.2</httpcomponents.asyncclient.version>
     <commons.compress.version>1.21</commons.compress.version>
     <commons.lang3.version>3.12.0</commons.lang3.version>
-    <commons.text.version>1.8</commons.text.version>
+    <commons.text.version>1.10.0</commons.text.version>
     <commons.configuration2.version>2.8.0</commons.configuration2.version>
     <commons.exec.version>1.3</commons.exec.version>
     <commons.codec.version>1.14</commons.codec.version>
@@ -139,6 +140,7 @@
 
     <hadoop2.7.version>2.7.7</hadoop2.7.version>
     <hadoop3.0.version>3.0.3</hadoop3.0.version>
+    <hadoop3.1.version>3.1.3</hadoop3.1.version>
     <hadoop3.2.version>3.2.0</hadoop3.2.version>
     <hadoop3.3.version>3.3.4</hadoop3.3.version>
     <hadoop.version>${hadoop2.7.version}</hadoop.version>
@@ -155,9 +157,9 @@
 
     <!-- test library versions -->
     <junit.version>4.12</junit.version>
-    <mockito.version>2.23.0</mockito.version>
+    <mockito.version>3.12.4</mockito.version>
     <assertj.version>1.7.0</assertj.version>
-    <powermock.version>2.0.0</powermock.version>
+    <powermock.version>2.0.9</powermock.version>
 
     <!-- plugin versions -->
     <plugin.antrun.version>1.8</plugin.antrun.version>
@@ -183,12 +185,12 @@
     <plugin.javadoc.version>3.2.0</plugin.javadoc.version>
     <plugin.jdeb.version>1.8</plugin.jdeb.version>
     <plugin.lifecycle.mapping.version>1.0.0</plugin.lifecycle.mapping.version>
-    <plugin.protobuf.version>0.5.0</plugin.protobuf.version>
+    <plugin.protobuf.version>0.6.1</plugin.protobuf.version>
     <plugin.rat.version>0.13</plugin.rat.version>
     <plugin.remote.resource.version>1.7.0</plugin.remote.resource.version>
     <plugin.resource.version>3.1.0</plugin.resource.version>
     <plugin.s3.upload.version>1.4</plugin.s3.upload.version>
-    <plugin.scala.alchim31.version>3.4.6</plugin.scala.alchim31.version>
+    <plugin.scala.alchim31.version>4.6.3</plugin.scala.alchim31.version>
     <plugin.scala.tools.version>2.15.2</plugin.scala.tools.version>
     <plugin.scalate.version>1.7.1</plugin.scalate.version>
     <plugin.scalatest.version>2.0.0</plugin.scalatest.version>
@@ -196,7 +198,6 @@
     <plugin.shade.version>3.2.2</plugin.shade.version>
     <plugin.source.version>3.2.1</plugin.source.version>
     <plugin.surefire.version>2.22.2</plugin.surefire.version>
-    <plugin.xml.version>1.0.2</plugin.xml.version>
 
     <testcontainers.version>1.15.1</testcontainers.version>
 
@@ -1420,45 +1421,6 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${plugin.checkstyle.version}</version>
-        <configuration>
-          <skip>true</skip>
-          <failOnViolation>false</failOnViolation>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <sourceDirectories>${basedir}/src/main/java,${basedir}/src/main/scala</sourceDirectories>
-          <testSourceDirectories>${basedir}/src/test/java</testSourceDirectories>
-          <configLocation>_tools/checkstyle.xml</configLocation>
-          <outputFile>${basedir}/target/checkstyle-output.xml</outputFile>
-          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-          <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
-        </configuration>
-        <executions>
-          <execution>
-            <id>checkstyle-fail-build</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <failOnViolation>true</failOnViolation>
-              <excludes>org/apache/zeppelin/interpreter/thrift/*,org/apache/zeppelin/python/proto/*</excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>checkstyle-gen-html-report</id>
-            <phase>install</phase>
-            <goals>
-              <goal>checkstyle-aggregate</goal>
-            </goals>
-            <configuration>
-              <excludes>org/apache/zeppelin/interpreter/thrift/*,org/apache/zeppelin/python/proto/*</excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${plugin.jar.version}</version>
         <configuration>
@@ -1592,7 +1554,6 @@
               <artifactId>maven-shade-plugin</artifactId>
               <version>${plugin.shade.version}</version>
           </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
@@ -1603,6 +1564,32 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${plugin.checkstyle.version}</version>
+          <configuration>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <sourceDirectories>${basedir}/src/main/java,${basedir}/src/main/scala</sourceDirectories>
+            <testSourceDirectories>${basedir}/src/test/java</testSourceDirectories>
+            <!-- use the tools module -->
+            <configLocation>zeppelin/checkstyle.xml</configLocation>
+          </configuration>
+          <executions>
+            <execution>
+              <id>checkstyle-fail-build</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <failOnViolation>true</failOnViolation>
+                <excludes>org/apache/zeppelin/interpreter/thrift/*,org/apache/zeppelin/python/proto/*</excludes>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.zeppelin</groupId>
+              <artifactId>build-tools</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>
@@ -1653,33 +1640,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>cobertura-maven-plugin</artifactId>
           <version>${plugin.cobertura.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>xml-maven-plugin</artifactId>
-          <version>${plugin.xml.version}</version>
-          <executions>
-            <execution>
-              <phase>verify</phase>
-              <goals>
-                <goal>validate</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <validationSets>
-              <validationSet>
-                <dir>${project.basedir}</dir>
-                <includes>
-                  <include>
-                    pom.xml
-                  </include>
-                </includes>
-                <systemId>_tools/maven-4.0.0.xsd</systemId>
-              </validationSet>
-            </validationSets>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1775,33 +1735,6 @@
           </executions>
         </plugin>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${plugin.resource.version}</version>
-          <executions>
-            <execution>
-              <id>copy-resources</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>${basedir}/target/site</outputDirectory>
-                <resources>
-                  <resource>
-                    <directory>${basedir}/../_tools/site</directory>
-                    <filtering>true</filtering>
-                    <includes>
-                      <include>**/*</include>
-                    </includes>
-                  </resource>
-                </resources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
       <plugin>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-maven-plugin</artifactId>
@@ -1863,12 +1796,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <version>${plugin.scala.tools.version}</version>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>${plugin.source.version}</version>
@@ -1898,33 +1825,17 @@
 
   <profiles>
     <profile>
-      <id>java11-support</id>
-      <activation>
-        <jdk>11</jdk>
-      </activation>
-      <properties>
-        <java.version>${java.11.version}</java.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>scala-2.10</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <scala.version>${scala.2.10.version}</scala.version>
-        <scala.binary.version>2.10</scala.binary.version>
-      </properties>
-    </profile>
-
-    <profile>
       <id>scala-2.11</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <properties>
         <scala.version>${scala.2.11.version}</scala.version>
         <scala.binary.version>2.11</scala.binary.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>scala-2.12</id>
+      <properties>
+        <scala.version>${scala.2.12.version}</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
       </properties>
     </profile>
 
@@ -2124,8 +2035,6 @@
               <exclude>**/local-repo/**</exclude>
               <exclude>**/null/**</exclude>
               <exclude>**/notebook/**</exclude>
-              <exclude>_tools/site/css/*</exclude>
-              <exclude>_tools/maven-4.0.0.xsd</exclude>
               <exclude>**/README.md</exclude>
               <exclude>DEPENDENCIES</exclude>
               <exclude>DEPLOY.md</exclude>
@@ -2257,4 +2166,26 @@
 
   </profiles>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>checkstyle-aggregate</report>
+            </reports>
+            <configuration>
+                <!-- use the tool module -->
+              <configLocation>zeppelin/checkstyle.xml</configLocation>
+              <excludes>org/apache/zeppelin/interpreter/thrift/*,org/apache/zeppelin/python/proto/*</excludes>
+            </configuration>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
